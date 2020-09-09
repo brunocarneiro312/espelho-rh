@@ -33,7 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // Libera acesso à API pública (/api/v1/public/)
                 authorize.antMatchers(HttpMethod.GET, getPublicApiAntMatchers()).permitAll();
 
-                // Concede acesso autenticado à API privada (/api/v1)
+                // Concede acesso autenticado à API privada (/api/v1/service)
                 authorize.antMatchers(getApiAntMatchers()).authenticated();
 
                 // Concede acesso autenticado à role de ADMIN para a API de admin (/api/v1/admin)
@@ -86,7 +86,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      * --------------
      * H2 AntMatchers
      * --------------
-     * @return
      */
     private String[] getH2AntMatchers() {
         return new String[] {
