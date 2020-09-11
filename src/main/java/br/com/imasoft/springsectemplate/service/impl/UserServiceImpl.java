@@ -22,9 +22,9 @@ public class UserServiceImpl implements UserService {
     private List<User> cachedUsers;
 
     // Verifica se o usuário possui uma chave válida
-    private final Predicate<User> hasKey = user -> user == null
-            || user.getKey() == null
-            || user.getKey().length() != 36;
+    private final Predicate<User> hasKey = user -> user != null
+            || user.getKey() != null
+            || user.getKey().length() == 36;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository) {
@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User save(User user) throws Exception {
-        if (hasKey.test(user)) {
+        if (!hasKey.test(user)) {
             user.setKey(UUID.randomUUID().toString());
         }
         return Optional.of(this.userRepository.save(user))
