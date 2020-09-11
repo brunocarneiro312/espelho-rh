@@ -22,9 +22,10 @@ public class UserServiceImpl implements UserService {
     private List<User> cachedUsers;
 
     // Verifica se o usuário possui uma chave válida
+    private static final int UUID_SIZE = 36;
     private final Predicate<User> hasKey = user -> user != null
-            || user.getKey() != null
-            || user.getKey().length() == 36;
+            && user.getKey() != null
+            && user.getKey().length() == UUID_SIZE;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository) {
