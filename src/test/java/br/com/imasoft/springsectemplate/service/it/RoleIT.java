@@ -36,8 +36,6 @@ public class RoleIT {
         Role roleCommonSaved = roleService.save(roleCommon);
         Role roleAdminSaved = roleService.save(roleAdmin);
 
-        System.out.println(roleService.findAll().size());
-
         // then
         assertAll("Test Save",
                 () -> assertNotNull(roleCommonSaved, "Não deveria estar nulo"),

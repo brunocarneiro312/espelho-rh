@@ -5,6 +5,9 @@ import lombok.*;
 import javax.persistence.*;
 import java.io.Serializable;
 
+/**
+ * @author brunocarneiro
+ */
 @Getter
 @Setter
 @ToString

@@ -25,7 +25,6 @@ import static org.mockito.BDDMockito.then;
  * ---------------------------------------------------
  * Teste unitário da classe de serviço RoleServiceImpl
  * ---------------------------------------------------
- *
  * @author brunocarneiro
  */
 @ExtendWith(MockitoExtension.class)

@@ -3,6 +3,9 @@ package br.com.imasoft.springsectemplate.service;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * @author brunocarneiro
+ */
 public interface CrudService<T extends Serializable> {
 
     T findById(Integer id) throws Exception;
