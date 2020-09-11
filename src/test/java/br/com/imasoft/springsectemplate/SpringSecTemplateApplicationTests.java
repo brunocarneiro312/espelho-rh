@@ -8,6 +8,7 @@ class SpringSecTemplateApplicationTests {
 
     @Test
     void contextLoads() {
+
     }
 
 }

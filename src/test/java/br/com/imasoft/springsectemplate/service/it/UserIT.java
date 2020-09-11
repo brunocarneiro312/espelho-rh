@@ -33,7 +33,7 @@ public class UserIT {
     @Test
     @DisplayName("Given user, when save, then save and return user")
     @Order(1)
-    public void givenUser_whenSave_thenSaveAndReturnUser() {
+    public void givenUser_whenSave_thenSaveAndReturnUser() throws Exception {
 
         // given
         User user = new User.Builder()
@@ -70,7 +70,7 @@ public class UserIT {
     @Test
     @DisplayName("Given user, when update, then return user updated")
     @Order(3)
-    public void givenUser_whenUpdate_thenReturnUserUpdated() {
+    public void givenUser_whenUpdate_thenReturnUserUpdated() throws Exception {
 
         // given
         User user = this.userController.findById(1).getBody();

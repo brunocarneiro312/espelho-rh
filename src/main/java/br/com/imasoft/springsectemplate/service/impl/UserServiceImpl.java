@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
 
@@ -14,6 +15,8 @@ import java.util.function.Predicate;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+
+    private List<User> cachedUsers;
 
     // Verifica se o usuário possui uma chave válida
     private final Predicate<User> hasKey = user -> user == null
@@ -32,26 +35,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findAll() {
-        return this.userRepository.findAll();
+    public List<User> findAll() throws Exception {
+        return this.cachedUsers = Optional.of(this.userRepository.findAll())
+                .orElseThrow(() -> new Exception("Erro ao buscar usuários"));
     }
 
     @Override
     public User save(User user) throws Exception {
-        try {
-            if (hasKey.test(user)) {
-                user.setKey(UUID.randomUUID().toString());
-            }
-            return this.userRepository.save(user);
+        if (hasKey.test(user)) {
+            user.setKey(UUID.randomUUID().toString());
         }
-        catch (Exception e) {
-            throw new Exception("Houve um erro durante o cadastro de usuário.", e);
-        }
+        return Optional.of(this.userRepository.save(user))
+                .orElseThrow(() -> new Exception("Houve um erro durante o cadastro de usuário."));
     }
 
     @Override
-    public User update(User user) {
-        return this.userRepository.saveAndFlush(user);
+    public User update(User user) throws Exception {
+        return Optional.of(this.userRepository.saveAndFlush(user))
+                .orElseThrow(() -> new Exception("Houve um erro durante a alteração do usuário."));
     }
 
     @Override
@@ -62,6 +63,10 @@ public class UserServiceImpl implements UserService {
             return deletedUser;
         }
         return null;
+    }
+
+    public List<User> getCachedUsers() {
+        return this.cachedUsers;
     }
 
 }

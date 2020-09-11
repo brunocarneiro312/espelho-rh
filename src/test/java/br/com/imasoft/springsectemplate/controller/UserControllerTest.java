@@ -74,7 +74,7 @@ class UserControllerTest {
                 post("/api/v1/service/user")
                     .content(jsonRequest)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .with(httpBasic("common", "123456")))
+                    .with(httpBasic("common", "123456")))
                 .andExpect(status().isOk());
     }
 }

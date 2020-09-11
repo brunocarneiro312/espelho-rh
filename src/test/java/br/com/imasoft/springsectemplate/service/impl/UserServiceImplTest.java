@@ -51,7 +51,7 @@ class UserServiceImplTest {
 
     @Test
     @DisplayName("When findAll, then return all users")
-    void findAll() {
+    void findAll() throws Exception {
 
         // given
         given(userRepository.findAll()).willReturn(
@@ -93,11 +93,11 @@ class UserServiceImplTest {
 
     @Test
     @DisplayName("Given user, when update, then update user")
-    void update() {
+    void update() throws Exception {
 
         // given
         User user = this.getUser();
-        given(userService.update(user)).willReturn(user);
+        given(userRepository.saveAndFlush(user)).willReturn(user);
 
         // when
         user.setName("Bruno Ferreira");
