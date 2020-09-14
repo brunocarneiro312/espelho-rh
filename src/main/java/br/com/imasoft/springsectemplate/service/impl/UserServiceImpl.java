@@ -41,12 +41,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> findAll() throws Exception {
         return this.cachedUsers = Optional.of(this.userRepository.findAll())
-                .orElseThrow(() -> new Exception("Erro ao buscar usuários"));
+                .orElseThrow(() -> new Exception("Erro ao buscar usuários."));
     }
 
     @Override
     public User save(User user) throws Exception {
-        if (!hasKey.test(user)) {
+        if (hasKey.negate().test(user)) {
             user.setKey(UUID.randomUUID().toString());
         }
         return Optional.of(this.userRepository.save(user))

@@ -64,6 +64,7 @@ class UserServiceImplTest {
         // then
         assertNotNull(users);
         assertEquals(2, users.size());
+        assertEquals(userService.getCachedUsers().size(), users.size());
         then(userRepository).should(times(1)).findAll();
     }
 

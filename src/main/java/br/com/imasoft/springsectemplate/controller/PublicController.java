@@ -32,4 +32,9 @@ public class PublicController {
         }
     }
 
+    @GetMapping
+    public ResponseEntity<String> index() {
+        return new ResponseEntity<>("Public API", HttpStatus.OK);
+    }
+
 }
