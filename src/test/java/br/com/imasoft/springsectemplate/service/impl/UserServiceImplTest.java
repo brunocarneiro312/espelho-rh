@@ -2,6 +2,7 @@ package br.com.imasoft.springsectemplate.service.impl;
 
 import br.com.imasoft.springsectemplate.model.User;
 import br.com.imasoft.springsectemplate.repository.UserRepository;
+import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,6 +11,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -115,7 +118,7 @@ class UserServiceImplTest {
 
     @Test
     @DisplayName("Given user id, when delete, then delete user")
-    void deleteById() {
+    void deleteById() throws Exception {
 
         // given
         User user = this.getUser();
@@ -132,13 +135,14 @@ class UserServiceImplTest {
 
     }
 
-    private User getUser() {
+    private User getUser() throws Exception {
         return new User.Builder()
                 .key(UUID.randomUUID().toString())
                 .name("Bruno Carneiro")
                 .email("bruno.carneiro@imasoft.com.br")
                 .birthdate(LocalDate.of(1987, 6, 29))
                 .password("123456")
+                .avatar(FileUtils.readFileToByteArray(new File("C:\\Users\\brunocarneiro\\Pictures\\rg-frente.PNG")))
                 .build();
     }
 }

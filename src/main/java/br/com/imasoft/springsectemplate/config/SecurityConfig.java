@@ -1,16 +1,22 @@
 package br.com.imasoft.springsectemplate.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+
+import javax.sql.DataSource;
 
 /**
  * --------------
@@ -22,6 +28,9 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private UserDetailsService userDetailService;
 
     /**
      * ---------------------------
@@ -38,9 +47,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 // Libera acesso à API pública (/api/v1/public/)
                 authorize.antMatchers(HttpMethod.GET, getPublicApiAntMatchers()).permitAll();
-
-                // Concede acesso autenticado à API privada (/api/v1/service)
-                authorize.antMatchers(getApiAntMatchers()).authenticated();
 
                 // Concede acesso autenticado à role de ADMIN para a API de admin (/api/v1/admin)
                 authorize.antMatchers(getRootApiAntMatchers()).hasRole("ADMIN");
@@ -61,31 +67,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     /**
-     * -------------------------------------
-     * InMemory Authentication Configuration
-     * -------------------------------------
+     * ------------------
+     * JPA Authentication
+     * ------------------
      */
     @Override
-    protected UserDetailsService userDetailsService() {
-
-        UserDetails common = User.withUsername("common")
-                .passwordEncoder(PasswordEncoderFactories.createDelegatingPasswordEncoder()::encode)
-                .password("123456")
-                .roles("COMMON")
-                .build();
-
-        UserDetails admin = User.withUsername("admin")
-                .passwordEncoder(PasswordEncoderFactories.createDelegatingPasswordEncoder()::encode)
-                .password("admin")
-                .roles("ADMIN")
-                .build();
-
-        InMemoryUserDetailsManager userDetailsManager = new InMemoryUserDetailsManager();
-
-        userDetailsManager.createUser(common);
-        userDetailsManager.createUser(admin);
-
-        return userDetailsManager;
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailService);
     }
 
     /**
@@ -131,6 +119,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new String[] {
                 "/api/v1/admin/**"
         };
+    }
+
+    @Bean(name = "multipartResolver")
+    public CommonsMultipartResolver multipartResolver() {
+        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
+        multipartResolver.setMaxUploadSize(5000000);
+        return multipartResolver;
+    }
+
+    @Bean
+    public PasswordEncoder encoder() {
+        return new BCryptPasswordEncoder();
     }
 
 }

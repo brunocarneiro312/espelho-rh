@@ -1,5 +1,7 @@
 package br.com.imasoft.springsectemplate.config;
 
+import br.com.imasoft.springsectemplate.model.Role;
+import br.com.imasoft.springsectemplate.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,7 +12,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import java.time.LocalDate;
+import java.util.Collections;
+
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -66,15 +71,30 @@ class SecurityConfigTest {
     @Test
     @DisplayName("Given authenticated user, when access service, then return ok (200)")
     public void givenAuthenticatedUser_whenAccessService_thenReturn200() throws Exception {
-        mockMvc.perform(get("/api/v1/service/user").with(httpBasic("common", "123456")))
-                .andExpect(status().isOk());
+        mockMvc.perform(get("/api/v1/service/user")
+                .with(user(new MyUserDetails(
+                        new User.Builder()
+                                .name("Bruno Carneiro")
+                                .birthdate(LocalDate.now())
+                                .email("common")
+                                .password("123456")
+                                .roles(Collections.singletonList(new Role("COMMON")))
+                                .build()
+                )))).andExpect(status().isOk());
     }
 
     @Test
-    @DisplayName("Given authenticated user, wher access admin, then return forbidden (403)")
+    @DisplayName("Given authenticated user, when access admin, then return forbidden (403)")
     public void givenAuthenticatedUser_whenAccessAdmin_thenReturn403() throws Exception {
-        mockMvc.perform(get("/api/v1/admin").with(httpBasic("common", "123456")))
-                .andExpect(status().isForbidden());
+        mockMvc.perform(get("/api/v1/admin").with(user(new MyUserDetails(
+                new User.Builder()
+                        .name("Bruno Carneiro")
+                        .birthdate(LocalDate.now())
+                        .email("common")
+                        .password("123456")
+                        .roles(Collections.singletonList(new Role("COMMON")))
+                        .build()
+        )))).andExpect(status().isForbidden());
     }
 
     /**
@@ -86,15 +106,29 @@ class SecurityConfigTest {
     @DisplayName("Given authenticated admin, when access service, then return ok (200)")
     public void givenAuthenticatedAdmin_whenAccessService_thenReturn200() throws Exception {
         mockMvc.perform(get("/api/v1/service/user")
-                .with(httpBasic("admin", "admin")))
-                .andExpect(status().isOk());
+                .with(user(new MyUserDetails(
+                        new User.Builder()
+                                .name("Bruno Carneiro")
+                                .birthdate(LocalDate.now())
+                                .email("admin")
+                                .password("123456")
+                                .roles(Collections.singletonList(new Role("ADMIN")))
+                                .build()
+                )))).andExpect(status().isOk());
     }
 
     @Test
     @DisplayName("Given authenticated admin, when access admin, then return ok (200)")
     public void givenAuthenticatedAdmin_whenAccessAdmin_thenReturn200() throws Exception {
         mockMvc.perform(get("/api/v1/admin")
-                .with(httpBasic("admin", "admin")))
-                .andExpect(status().isOk());
+                .with(user(new MyUserDetails(
+                        new User.Builder()
+                                .name("Bruno Carneiro")
+                                .birthdate(LocalDate.now())
+                                .email("bruno.carneiro312@gmail.com")
+                                .password("123456")
+                                .roles(Collections.singletonList(new Role("ROLE_ADMIN")))
+                                .build()
+                )))).andExpect(status().isOk());
     }
 }

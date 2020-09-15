@@ -1,5 +1,7 @@
 package br.com.imasoft.springsectemplate.controller;
 
+import br.com.imasoft.springsectemplate.config.MyUserDetails;
+import br.com.imasoft.springsectemplate.model.Role;
 import br.com.imasoft.springsectemplate.model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -16,9 +18,11 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.UUID;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -49,14 +53,14 @@ class PublicControllerTest {
     }
 
     @Test
-    @DisplayName("Given when, when sign up, then return user")
+    @DisplayName("Given user, when sign up, then return user")
     public void signUp() throws Exception {
 
         // given
         User user = new User.Builder()
                 .key(UUID.randomUUID().toString())
-                .name("Bruno Carneiro")
-                .email("bruno.carneiro312@gmail.com")
+                .name("Test User")
+                .email("test.user@imasoft.com.br")
                 .password("123456")
                 .birthdate(LocalDate.of(1987, 7, 29))
                 .build();
@@ -68,8 +72,15 @@ class PublicControllerTest {
                 post("/api/v1/public")
                         .content(jsonRequest)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .with(httpBasic("common", "123456")))
-                .andExpect(status().isOk());
+                        .with(user(new MyUserDetails(
+                                new User.Builder()
+                                        .name("Test User")
+                                        .email("test.user@imasoft.com.br")
+                                        .birthdate(LocalDate.now())
+                                        .password("123456")
+                                        .roles(Collections.singletonList(new Role("ADMIN")))
+                                        .build()
+                        )))).andExpect(status().isOk());
     }
 
 }

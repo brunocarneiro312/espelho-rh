@@ -4,12 +4,15 @@ import br.com.imasoft.springsectemplate.model.User;
 import br.com.imasoft.springsectemplate.repository.UserRepository;
 import br.com.imasoft.springsectemplate.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * @author brunocarneiro
@@ -40,8 +43,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> findAll() throws Exception {
-        return this.cachedUsers = Optional.of(this.userRepository.findAll())
+        this.cachedUsers = Optional.of(this.userRepository.findAll())
                 .orElseThrow(() -> new Exception("Erro ao buscar usuários."));
+        this.cachedUsers = this.cachedUsers.stream().map(user -> {
+            user.setPassword("<secret>");
+            return user;
+        }).collect(Collectors.toList());
+        return this.cachedUsers;
     }
 
     @Override
@@ -67,6 +75,18 @@ public class UserServiceImpl implements UserService {
             return deletedUser;
         }
         return null;
+    }
+
+    @Override
+    public User findUserByEmail(String email) throws Exception {
+        return Optional.of(this.userRepository.findUserByEmail(email))
+                .orElseThrow(() -> new Exception("Não foi possível recuperar o usuário pelo email."));
+    }
+
+    @Override
+    public User findByName(String name) throws Exception {
+        return Optional.of(this.userRepository.findByName(name))
+                .orElseThrow(() -> new Exception("Não foi possível recuperar o usuário pelo nome."));
     }
 
     public List<User> getCachedUsers() {

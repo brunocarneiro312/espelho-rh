@@ -2,11 +2,13 @@ package br.com.imasoft.springsectemplate.service.it;
 
 import br.com.imasoft.springsectemplate.controller.UserController;
 import br.com.imasoft.springsectemplate.model.User;
+import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -42,6 +44,7 @@ public class UserIT {
                 .email("bruno.carneiro@imasoft.com.br")
                 .password("123456")
                 .birthdate(LocalDate.of(1987, 6, 29))
+                .avatar(FileUtils.readFileToByteArray(new File("C:\\Users\\brunocarneiro\\Pictures\\rg-frente.PNG")))
                 .build();
 
         // when
@@ -49,6 +52,7 @@ public class UserIT {
 
         // then
         assertTrue(re.getStatusCode().is2xxSuccessful());
+        assertEquals(user.getAvatar(), re.getBody().getAvatar());
 
     }
 

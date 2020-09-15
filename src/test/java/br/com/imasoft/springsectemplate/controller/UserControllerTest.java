@@ -1,5 +1,7 @@
 package br.com.imasoft.springsectemplate.controller;
 
+import br.com.imasoft.springsectemplate.config.MyUserDetails;
+import br.com.imasoft.springsectemplate.model.Role;
 import br.com.imasoft.springsectemplate.model.User;
 import br.com.imasoft.springsectemplate.service.impl.UserServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,9 +19,11 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.UUID;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -74,7 +78,14 @@ class UserControllerTest {
                 post("/api/v1/service/user")
                     .content(jsonRequest)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .with(httpBasic("common", "123456")))
-                .andExpect(status().isOk());
+                        .with(user(new MyUserDetails(
+                                new User.Builder()
+                                        .name("Bruno Carneiro")
+                                        .birthdate(LocalDate.now())
+                                        .email("admin")
+                                        .password("123456")
+                                        .roles(Collections.singletonList(new Role("ADMIN")))
+                                        .build()
+                        )))).andExpect(status().isOk());
     }
 }

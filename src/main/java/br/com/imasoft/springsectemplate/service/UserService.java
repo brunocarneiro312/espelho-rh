@@ -7,4 +7,8 @@ import br.com.imasoft.springsectemplate.model.User;
  */
 public interface UserService extends CrudService<User> {
 
+    User findByName(String username) throws Exception;
+
+    User findUserByEmail(String email) throws Exception;
+
 }
