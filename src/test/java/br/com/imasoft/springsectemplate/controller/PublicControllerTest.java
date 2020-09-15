@@ -1,6 +1,7 @@
 package br.com.imasoft.springsectemplate.controller;
 
 import br.com.imasoft.springsectemplate.config.MyUserDetails;
+import br.com.imasoft.springsectemplate.enums.RoleEnum;
 import br.com.imasoft.springsectemplate.model.Role;
 import br.com.imasoft.springsectemplate.model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -69,7 +70,7 @@ class PublicControllerTest {
 
         // when / then
         mockMvc.perform(
-                post("/api/v1/public")
+                post("/api/v1/public/signup")
                         .content(jsonRequest)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .with(user(new MyUserDetails(
@@ -78,7 +79,7 @@ class PublicControllerTest {
                                         .email("test.user@imasoft.com.br")
                                         .birthdate(LocalDate.now())
                                         .password("123456")
-                                        .roles(Collections.singletonList(new Role("ADMIN")))
+                                        .roles(Collections.singletonList(new Role(RoleEnum.ROLE_ADMIN.getRoleName())))
                                         .build()
                         )))).andExpect(status().isOk());
     }

@@ -1,5 +1,6 @@
 package br.com.imasoft.springsectemplate.config;
 
+import br.com.imasoft.springsectemplate.enums.RoleEnum;
 import br.com.imasoft.springsectemplate.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -21,7 +22,7 @@ public class MyUserDetails implements UserDetails {
         this.active = true;
         if (user.getRoles() == null || user.getRoles().size() == 0) {
             authorities = new ArrayList<>(Collections.singletonList(
-                    new SimpleGrantedAuthority("COMMON")));
+                    new SimpleGrantedAuthority(RoleEnum.ROLE_COMMON.getRoleName())));
         }
         else {
             this.authorities = user.getRoles().stream()

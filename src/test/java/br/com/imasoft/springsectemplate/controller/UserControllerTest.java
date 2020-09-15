@@ -1,6 +1,7 @@
 package br.com.imasoft.springsectemplate.controller;
 
 import br.com.imasoft.springsectemplate.config.MyUserDetails;
+import br.com.imasoft.springsectemplate.enums.RoleEnum;
 import br.com.imasoft.springsectemplate.model.Role;
 import br.com.imasoft.springsectemplate.model.User;
 import br.com.imasoft.springsectemplate.service.impl.UserServiceImpl;
@@ -84,7 +85,7 @@ class UserControllerTest {
                                         .birthdate(LocalDate.now())
                                         .email("admin")
                                         .password("123456")
-                                        .roles(Collections.singletonList(new Role("ADMIN")))
+                                        .roles(Collections.singletonList(new Role(RoleEnum.ROLE_ADMIN.getRoleName())))
                                         .build()
                         )))).andExpect(status().isOk());
     }

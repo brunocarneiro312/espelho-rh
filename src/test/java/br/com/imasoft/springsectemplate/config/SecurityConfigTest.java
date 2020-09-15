@@ -50,17 +50,24 @@ class SecurityConfigTest {
     @Test
     @DisplayName("Given anonymous user, when access service, then return forbidden (403)")
     @WithAnonymousUser
-    public void givenAnonymousUser_whenAccessService_thenReturn401() throws Exception {
+    public void givenAnonymousUser_whenAccessService_thenReturn403() throws Exception {
         mockMvc.perform(get("/api/v1/service/user"))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
     }
 
     @Test
     @DisplayName("Given Anonymous user, when access admin, then return forbidden (403)")
     @WithAnonymousUser
-    public void givenAnonymousUser_whenAccessAdmin_thenReturn401() throws Exception {
+    public void givenAnonymousUser_whenAccessAdmin_thenReturn403() throws Exception {
         mockMvc.perform(get("/api/v1/admin"))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DisplayName("Given Anonymous user, when access public, then return ok (200)")
+    public void givenAnonymousUser_whenAccessPublic_thenReturn200() throws Exception {
+        mockMvc.perform(get("/api/v1/public"))
+                .andExpect(status().isOk());
     }
 
     /**
@@ -78,7 +85,7 @@ class SecurityConfigTest {
                                 .birthdate(LocalDate.now())
                                 .email("common")
                                 .password("123456")
-                                .roles(Collections.singletonList(new Role("COMMON")))
+                                .roles(Collections.singletonList(new Role("ROLE_COMMON")))
                                 .build()
                 )))).andExpect(status().isOk());
     }
@@ -112,7 +119,7 @@ class SecurityConfigTest {
                                 .birthdate(LocalDate.now())
                                 .email("admin")
                                 .password("123456")
-                                .roles(Collections.singletonList(new Role("ADMIN")))
+                                .roles(Collections.singletonList(new Role("ROLE_ADMIN")))
                                 .build()
                 )))).andExpect(status().isOk());
     }
