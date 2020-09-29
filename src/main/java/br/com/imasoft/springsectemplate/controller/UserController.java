@@ -15,6 +15,7 @@ import java.util.Optional;
 /**
  * @author brunocarneiro
  */
+@CrossOrigin
 @RestController
 @RequestMapping(value = "/api/v1/service/user")
 public class UserController {

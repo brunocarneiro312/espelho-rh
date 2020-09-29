@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * @author brunocarneiro
  */
+@CrossOrigin
 @RestController
 @RequestMapping("/api/v1/public")
 public class PublicController {
@@ -43,7 +44,6 @@ public class PublicController {
             return new ResponseEntity<>(this.userService.save(user), HttpStatus.OK);
         }
         catch (Exception e) {
-            System.out.println(e.getMessage());
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -62,14 +62,13 @@ public class PublicController {
             return new ResponseEntity<>(new AuthenticationResponse(jwt), HttpStatus.OK);
         }
         catch (Exception e) {
-            System.out.println(e.getMessage());
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
     }
 
     @GetMapping
     public ResponseEntity<String> index() {
-        return new ResponseEntity<>("Public API", HttpStatus.OK);
+        return new ResponseEntity<>("SecurityAuthManager::Public API", HttpStatus.OK);
     }
 
 }

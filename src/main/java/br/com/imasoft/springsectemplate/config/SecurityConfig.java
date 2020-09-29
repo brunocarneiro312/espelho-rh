@@ -2,11 +2,8 @@ package br.com.imasoft.springsectemplate.config;
 
 import br.com.imasoft.springsectemplate.filter.JwtRequestFilter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -18,9 +15,15 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import javax.sql.DataSource;
+import java.util.Arrays;
 
 /**
  * --------------
@@ -46,14 +49,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
+        http.cors()
+            .and()
             .authorizeRequests(authorize -> {
 
                 // Libera acesso aos recursos do H2
                 authorize.antMatchers(getH2AntMatchers()).permitAll();
 
                 // Libera acesso à API pública (/api/v1/public/)
-                authorize.antMatchers(getPublicApiAntMatchers()).permitAll();
+                authorize.antMatchers(getPublicApiAntMatchers()).permitAll().and();
 
                 // Concede acesso autenticado à role de ADMIN para a API de admin (/api/v1/admin)
                 authorize.antMatchers(getRootApiAntMatchers()).hasRole("ADMIN");
@@ -80,6 +84,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailService);
     }
+
+
 
     /**
      * --------------
