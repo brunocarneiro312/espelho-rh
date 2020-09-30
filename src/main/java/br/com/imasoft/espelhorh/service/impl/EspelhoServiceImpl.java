@@ -11,7 +11,7 @@ import java.util.List;
 @Service
 public class EspelhoServiceImpl implements EspelhoService {
 
-    private EspelhoRepository espelhoRepository;
+    private final EspelhoRepository espelhoRepository;
 
     @Autowired
     public EspelhoServiceImpl(EspelhoRepository espelhoRepository) {

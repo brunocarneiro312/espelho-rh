@@ -10,7 +10,7 @@ import java.util.List;
 @Service
 public class FuncionarioServiceImpl implements FuncionarioService {
 
-    private FuncionarioRepository funcionarioRepository;
+    private final FuncionarioRepository funcionarioRepository;
 
     public FuncionarioServiceImpl(FuncionarioRepository funcionarioRepository) {
         this.funcionarioRepository = funcionarioRepository;
