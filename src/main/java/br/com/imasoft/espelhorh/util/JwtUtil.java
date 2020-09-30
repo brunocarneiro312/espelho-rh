@@ -21,7 +21,6 @@ import java.util.function.Function;
 public class JwtUtil {
 
     private final String SECRET = "secret";
-    private final Integer _10_HOURS = 1000 * 60 * 60 * 10;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -50,6 +49,7 @@ public class JwtUtil {
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
+        int _10_HOURS = 1000 * 60 * 60 * 10;
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
