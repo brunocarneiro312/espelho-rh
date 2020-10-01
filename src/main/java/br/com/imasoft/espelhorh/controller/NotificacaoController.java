@@ -24,7 +24,7 @@ public class NotificacaoController {
 
     @PostMapping
     public ResponseEntity<Notificacao> save(@RequestBody Notificacao notificacao) throws Exception {
-        return Optional.of(new ResponseEntity<>(notificacao, HttpStatus.OK))
+        return Optional.of(new ResponseEntity<>(this.notificacaoService.save(notificacao), HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
@@ -40,15 +40,31 @@ public class NotificacaoController {
                 .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
-    @PutMapping
-    public ResponseEntity<Notificacao> update(@RequestBody Notificacao notificacao) throws Exception {
-        return Optional.of(new ResponseEntity<>(this.notificacaoService.update(notificacao), HttpStatus.OK))
+    @PutMapping("/{id}")
+    public ResponseEntity<Notificacao> update(@PathVariable("id") Integer id,
+                                              @RequestBody Notificacao notificacao) throws Exception {
+
+        Notificacao n = this.notificacaoService.findById(id);
+
+        assert n != null;
+
+        n.setText(notificacao.getText());
+        n.setDataInicio(notificacao.getDataInicio());
+        n.setDataFim(notificacao.getDataFim());
+
+        return Optional.of(new ResponseEntity<>(this.notificacaoService.update(n), HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Notificacao> delete(@PathVariable("id") Integer id) throws Exception {
-        return Optional.of(new ResponseEntity<>(this.notificacaoService.deleteById(id), HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR));
+    public ResponseEntity<String> delete(@PathVariable("id") Integer id) throws Exception {
+
+        Notificacao notificacao = this.notificacaoService.findById(id);
+
+        if (notificacao != null) {
+            return new ResponseEntity<>("Notificação removida.", HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>("Erro ao remover notificação.", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

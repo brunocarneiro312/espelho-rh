@@ -46,6 +46,8 @@ public class FuncionarioController {
 
         Funcionario f = this.funcionarioService.findById(id);
 
+        assert f != null;
+
         f.setRg(request.getRg());
         f.setNome(request.getNome());
 
