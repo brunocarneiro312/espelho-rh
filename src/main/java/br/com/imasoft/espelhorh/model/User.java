@@ -2,6 +2,7 @@ package br.com.imasoft.espelhorh.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import net.minidev.json.annotate.JsonIgnore;
@@ -17,32 +18,12 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 @Entity
 @Table(name = "USER")
 public class User implements Serializable {
 
-    public User() {
 
-    }
-
-    public User(String email, String password, String name, LocalDate birthdate, List<Role> roles) {
-        this.email = email;
-        this.password = password;
-        this.name = name;
-        this.birthdate = birthdate;
-        this.roles = roles;
-    }
-
-    private User(Builder builder) {
-        this.id = builder.id;
-        this.key = builder.key;
-        this.email = builder.email;
-        this.password = builder.password;
-        this.name = builder.name;
-        this.birthdate = builder.birthdate;
-        this.avatar = builder.avatar;
-        this.roles = builder.roles;
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,7 +42,7 @@ public class User implements Serializable {
     @Column(name = "NAME", nullable = false)
     private String name;
 
-    @Column(name = "BIRTHDATE", nullable = false)
+    @Column(name = "BIRTHDATE")
     private LocalDate birthdate;
 
     @Lob
@@ -82,6 +63,25 @@ public class User implements Serializable {
     @JsonIgnore
     public String getPassword() {
         return password;
+    }
+
+    public User(String email, String password, String name, LocalDate birthdate, List<Role> roles) {
+        this.email = email;
+        this.password = password;
+        this.name = name;
+        this.birthdate = birthdate;
+        this.roles = roles;
+    }
+
+    private User(Builder builder) {
+        this.id = builder.id;
+        this.key = builder.key;
+        this.email = builder.email;
+        this.password = builder.password;
+        this.name = builder.name;
+        this.birthdate = builder.birthdate;
+        this.avatar = builder.avatar;
+        this.roles = builder.roles;
     }
 
     /**

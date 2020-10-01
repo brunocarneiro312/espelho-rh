@@ -1,6 +1,7 @@
 package br.com.imasoft.espelhorh.service.impl;
 
 import br.com.imasoft.espelhorh.model.Funcionario;
+import br.com.imasoft.espelhorh.model.User;
 import br.com.imasoft.espelhorh.repository.FuncionarioRepository;
 import br.com.imasoft.espelhorh.service.FuncionarioService;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,10 +10,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
@@ -23,6 +26,9 @@ class FuncionarioServiceImplTest {
 
     @Mock
     private FuncionarioRepository funcionarioRepository;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @BeforeEach
     void setUp() {
@@ -36,8 +42,7 @@ class FuncionarioServiceImplTest {
         // given
         Funcionario funcionario = this.getFuncionario();
 
-        given(this.funcionarioRepository.save(funcionario))
-                .willReturn(funcionario);
+        given(this.funcionarioRepository.save(funcionario)).willReturn(funcionario);
 
         // when
         Funcionario newFuncionario = this.funcionarioService.save(funcionario);
@@ -47,7 +52,7 @@ class FuncionarioServiceImplTest {
 
         assertAll("Save",
                 () -> assertNotNull(newFuncionario, "O funcionário não deveria estar nulo."),
-                () -> assertEquals(funcionario.toString(), newFuncionario.toString()));
+                () -> assertEquals(funcionario.getRg(), newFuncionario.getRg(), "O RG deveria ser igual."));
 
     }
 
@@ -133,6 +138,7 @@ class FuncionarioServiceImplTest {
         return new Funcionario.Builder()
                 .rg("1234567")
                 .nome("Bruno")
+                .user(new User.Builder().email("bruno@email.com").password("123456").build())
                 .build();
     }
 

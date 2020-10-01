@@ -17,14 +17,6 @@ import java.util.List;
 @Table(name = "FUNCIONARIO")
 public class Funcionario implements Serializable {
 
-    public Funcionario(Builder builder) {
-        this.rg = builder.rg;
-        this.nome = builder.nome;
-        this.notificacoes = builder.notificacoes;
-        this.espelhos = builder.espelhos;
-        this.user = builder.user;
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
@@ -43,9 +35,17 @@ public class Funcionario implements Serializable {
     @OneToMany(mappedBy = "funcionario")
     private List<Espelho> espelhos;
 
-    @OneToOne
+    @OneToOne(cascade = { CascadeType.ALL })
     private User user;
 
+    public Funcionario(Builder builder) {
+        this.rg = builder.rg;
+        this.nome = builder.nome;
+        this.notificacoes = builder.notificacoes;
+        this.espelhos = builder.espelhos;
+        this.user = builder.user;
+    }
+    
     public static class Builder {
 
         private String rg;

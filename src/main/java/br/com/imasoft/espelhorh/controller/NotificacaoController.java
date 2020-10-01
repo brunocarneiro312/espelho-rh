@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
+@RequestMapping("/api/v1/notificacao")
 public class NotificacaoController {
 
     private final NotificacaoService notificacaoService;

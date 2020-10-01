@@ -1,7 +1,5 @@
 package br.com.imasoft.espelhorh.controller;
 
-import br.com.imasoft.espelhorh.dto.request.FuncionarioRequest;
-import br.com.imasoft.espelhorh.dto.response.FuncionarioResponse;
 import br.com.imasoft.espelhorh.model.Funcionario;
 import br.com.imasoft.espelhorh.service.FuncionarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Controller
+@RequestMapping("/api/v1/funcionario")
 public class FuncionarioController {
 
     private final FuncionarioService funcionarioService;
@@ -25,80 +23,45 @@ public class FuncionarioController {
     }
 
     @PostMapping
-    public ResponseEntity<FuncionarioResponse> save(@RequestBody FuncionarioRequest request) throws Exception {
-
-        Funcionario funcionario = new Funcionario.Builder()
-                .nome(request.getNome())
-                .rg(request.getRg())
-                .build();
-
-        Funcionario funcionarioSaved = this.funcionarioService.save(funcionario);
-
-        if (funcionarioSaved == null) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        FuncionarioResponse response = new FuncionarioResponse(funcionarioSaved);
-
-        return Optional.of(new ResponseEntity<>(response, HttpStatus.OK))
+    public ResponseEntity<Funcionario> save(@RequestBody Funcionario request) throws Exception {
+        return Optional.of(new ResponseEntity<>(this.funcionarioService.save(request), HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
     @GetMapping
-    public ResponseEntity<List<FuncionarioResponse>> list() throws Exception {
-
-        List<Funcionario> funcionarios = this.funcionarioService.findAll();
-
-        if (funcionarios.size() == 0) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        List<FuncionarioResponse> response = funcionarios.stream()
-                .map(FuncionarioResponse::new)
-                .collect(Collectors.toList());
-
-        return Optional.of(new ResponseEntity<>(response, HttpStatus.OK))
+    public ResponseEntity<List<Funcionario>> list() throws Exception {
+        return Optional.of(new ResponseEntity<>(this.funcionarioService.findAll(), HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<FuncionarioResponse> findById(@PathVariable("id") Integer id) throws Exception {
-
-        Funcionario recoveredFuncionario = this.funcionarioService.findById(id);
-
-        if (recoveredFuncionario == null) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        return Optional.of(new ResponseEntity<>(new FuncionarioResponse(recoveredFuncionario), HttpStatus.OK))
+    public ResponseEntity<Funcionario> findById(@PathVariable("id") Integer id) throws Exception {
+        return Optional.of(new ResponseEntity<>(this.funcionarioService.findById(id), HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
-    @PutMapping
-    public ResponseEntity<FuncionarioResponse> update(@RequestBody FuncionarioRequest request) throws Exception {
+    @PutMapping("/{id}")
+    public ResponseEntity<Funcionario> update(@PathVariable("id") Integer id,
+                                              @RequestBody Funcionario request) throws Exception {
 
-        Funcionario funcionario = new Funcionario.Builder()
-                .nome(request.getNome())
-                .rg(request.getRg())
-                .build();
+        Funcionario f = this.funcionarioService.findById(id);
 
-        Funcionario updatedFuncionario = this.funcionarioService.update(funcionario);
+        f.setRg(request.getRg());
+        f.setNome(request.getNome());
 
-        if (updatedFuncionario == null) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        return Optional.of(new ResponseEntity<>(new FuncionarioResponse(updatedFuncionario), HttpStatus.OK))
+        return Optional.of(new ResponseEntity<>(this.funcionarioService.update(f), HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<FuncionarioResponse> delete(@PathVariable("id") Integer id) throws Exception {
+    public ResponseEntity<String> delete(@PathVariable("id") Integer id) throws Exception {
 
-        Funcionario deletedFuncionario = this.funcionarioService.deleteById(id);
-        FuncionarioResponse response = new FuncionarioResponse(deletedFuncionario);
+        Funcionario funcionario = this.funcionarioService.deleteById(id);
 
-        return Optional.of(new ResponseEntity<>(response, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR));
+        if (funcionario != null) {
+            return new ResponseEntity<>("Funcionário removido.", HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>("Erro ao remover o funcionário.", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
