@@ -17,14 +17,6 @@ import java.util.Date;
 @Table(name = "ESPELHO")
 public class Espelho implements Serializable {
 
-    public Espelho(Integer id, byte[] espelho, Date uploadedAt, String anoMes, Funcionario funcionario) {
-        this.id = id;
-        this.espelho = espelho;
-        this.uploadedAt = uploadedAt;
-        this.anoMes = anoMes;
-        this.funcionario = funcionario;
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
@@ -41,6 +33,14 @@ public class Espelho implements Serializable {
 
     @ManyToOne
     private Funcionario funcionario;
+
+    public Espelho(Integer id, byte[] espelho, Date uploadedAt, String anoMes, Funcionario funcionario) {
+        this.id = id;
+        this.espelho = espelho;
+        this.uploadedAt = uploadedAt;
+        this.anoMes = anoMes;
+        this.funcionario = funcionario;
+    }
 
     public static class Builder {
         private Integer id;
