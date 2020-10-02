@@ -6,6 +6,7 @@ import br.com.imasoft.espelhorh.service.NotificacaoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -31,6 +32,7 @@ public class NotificacaoServiceImpl implements NotificacaoService {
 
     @Override
     public Notificacao save(Notificacao notificacao) throws Exception {
+        notificacao.setDataInicio(new Date());
         return this.notificacaoRepository.save(notificacao);
     }
 

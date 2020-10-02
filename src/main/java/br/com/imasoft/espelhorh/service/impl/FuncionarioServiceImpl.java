@@ -1,24 +1,21 @@
 package br.com.imasoft.espelhorh.service.impl;
 
+import br.com.imasoft.espelhorh.enums.RoleEnum;
 import br.com.imasoft.espelhorh.model.Funcionario;
+import br.com.imasoft.espelhorh.model.Role;
 import br.com.imasoft.espelhorh.repository.FuncionarioRepository;
 import br.com.imasoft.espelhorh.service.FuncionarioService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class FuncionarioServiceImpl implements FuncionarioService {
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     private final FuncionarioRepository funcionarioRepository;
 
+    @Autowired
     public FuncionarioServiceImpl(FuncionarioRepository funcionarioRepository) {
         this.funcionarioRepository = funcionarioRepository;
     }
@@ -31,14 +28,24 @@ public class FuncionarioServiceImpl implements FuncionarioService {
 
     @Override
     public List<Funcionario> findAll() throws Exception {
-        return this.funcionarioRepository.findAll();
+        return Optional.of(this.funcionarioRepository.findAll())
+                .orElseThrow(Exception::new);
     }
 
     @Override
     public Funcionario save(Funcionario funcionario) throws Exception {
+
         assert funcionario.getUser() != null;
+
+        List<Role> roles = new ArrayList<>(Collections.singletonList(new Role.Builder()
+                .id(RoleEnum.ROLE_COMMON.getId())
+                .build()));
+
+        funcionario.getUser().setRoles(roles);
         funcionario.getUser().setKey(UUID.randomUUID().toString());
-        return this.funcionarioRepository.save(funcionario);
+
+        return Optional.of(this.funcionarioRepository.save(funcionario))
+                .orElseThrow(Exception::new);
     }
 
     @Override

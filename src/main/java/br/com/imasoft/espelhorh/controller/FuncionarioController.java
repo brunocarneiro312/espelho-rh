@@ -5,6 +5,7 @@ import br.com.imasoft.espelhorh.service.FuncionarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,14 +17,22 @@ import java.util.Optional;
 public class FuncionarioController {
 
     private final FuncionarioService funcionarioService;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public FuncionarioController(FuncionarioService funcionarioService) {
+    public FuncionarioController(FuncionarioService funcionarioService,
+                                 PasswordEncoder passwordEncoder) {
+
         this.funcionarioService = funcionarioService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping
     public ResponseEntity<Funcionario> save(@RequestBody Funcionario request) throws Exception {
+
+        request.getUser().setPassword(
+                passwordEncoder.encode(request.getUser().getPassword()));
+
         return Optional.of(new ResponseEntity<>(this.funcionarioService.save(request), HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR));
     }

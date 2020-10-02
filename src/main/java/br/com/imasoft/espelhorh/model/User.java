@@ -10,6 +10,7 @@ import net.minidev.json.annotate.JsonIgnore;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -17,13 +18,10 @@ import java.util.List;
  */
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @Entity
 @Table(name = "USER")
 public class User implements Serializable {
-
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -82,6 +80,19 @@ public class User implements Serializable {
         this.birthdate = builder.birthdate;
         this.avatar = builder.avatar;
         this.roles = builder.roles;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", key='" + key + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", birthdate=" + birthdate +
+                ", avatar=" + Arrays.toString(avatar) +
+                '}';
     }
 
     /**

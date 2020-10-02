@@ -1,9 +1,9 @@
 package br.com.imasoft.espelhorh.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,7 +12,6 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
 @Entity
 @Table(name = "FUNCIONARIO")
 public class Funcionario implements Serializable {
@@ -29,14 +28,25 @@ public class Funcionario implements Serializable {
     @Column(name = "NOME", nullable = false)
     private String nome;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "funcionarios")
     private List<Notificacao> notificacoes;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "funcionario")
     private List<Espelho> espelhos;
 
     @OneToOne(cascade = { CascadeType.ALL })
     private User user;
+
+    @Override
+    public String toString() {
+        return "Funcionario{" +
+                "id=" + id +
+                ", rg='" + rg + '\'' +
+                ", nome='" + nome + '\'' +
+                '}';
+    }
 
     public Funcionario(Builder builder) {
         this.rg = builder.rg;

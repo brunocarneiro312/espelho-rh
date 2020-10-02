@@ -10,7 +10,6 @@ import java.io.Serializable;
  */
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -27,6 +26,14 @@ public class Role implements Serializable {
 
     public Role(String roleName) {
         this.roleName = roleName;
+    }
+
+    @Override
+    public String toString() {
+        return "Role{" +
+                "id=" + id +
+                ", roleName='" + roleName + '\'' +
+                '}';
     }
 
     public static class Builder {

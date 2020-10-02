@@ -3,7 +3,6 @@ package br.com.imasoft.espelhorh.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,7 +11,6 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
 @Entity
 @Table(name = "ESPELHO")
 public class Espelho implements Serializable {
@@ -33,6 +31,15 @@ public class Espelho implements Serializable {
 
     @ManyToOne
     private Funcionario funcionario;
+
+    @Override
+    public String toString() {
+        return "Espelho{" +
+                "id=" + id +
+                ", uploadedAt=" + uploadedAt +
+                ", anoMes='" + anoMes + '\'' +
+                '}';
+    }
 
     public Espelho(Integer id, byte[] espelho, Date uploadedAt, String anoMes, Funcionario funcionario) {
         this.id = id;

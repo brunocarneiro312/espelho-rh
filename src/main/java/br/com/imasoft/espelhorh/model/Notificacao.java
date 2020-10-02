@@ -3,7 +3,6 @@ package br.com.imasoft.espelhorh.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,7 +11,6 @@ import java.util.List;
 
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @Entity
 @Table(name = "NOTIFICACAO")
@@ -41,13 +39,22 @@ public class Notificacao implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataFim;
 
-
     @ManyToMany
     @JoinTable(
             name = "NOTIFICACAO_FUNCIONARIO",
             joinColumns = @JoinColumn(name = "ID_NOTIFICACAO"),
             inverseJoinColumns = @JoinColumn(name = "ID_FUNCIONARIO"))
     private List<Funcionario> funcionarios;
+
+    @Override
+    public String toString() {
+        return "Notificacao{" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                ", dataInicio=" + dataInicio +
+                ", dataFim=" + dataFim +
+                '}';
+    }
 
     public static class Builder {
         private Integer id;
